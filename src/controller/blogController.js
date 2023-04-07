@@ -89,4 +89,12 @@ const deleteBlog= async (req, res) =>{
     }
 }
 
-module.exports = { allBlogs, getMyBlogs, getBlog, addBlog, updateBlog, deleteBlog };
+const uploadImg = async (req, res)=>{
+    try{
+        res.send("file uploaded.")
+    }catch(err){
+        res.status(400).send("img not upload")        
+    }
+}
+
+module.exports = { allBlogs, getMyBlogs, getBlog, addBlog, updateBlog, deleteBlog, uploadImg};

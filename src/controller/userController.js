@@ -67,7 +67,7 @@ const registerUser = async (req, res) => {
 
         const user1 = await RegisterUser.findOne({ email: req.body.email })
         if (user1) {
-            return res.status(400).send({msg:"email alredy exists"})
+            return res.status(400).send({msg:"Email alreday exists ..!"})
         }
 
         const user = new RegisterUser(req.body)
@@ -75,8 +75,7 @@ const registerUser = async (req, res) => {
         const token = await user.generateAuthToken();
 
         const createuser = await user.save();
-        res.status(201).send({msg:"user created successfully", data: createuser})
-        // console.log("data",createuser)
+        res.status(201).send({msg:"User Created Successfully.!!", data: createuser})
     } catch (err) {
         res.status(400).send(err.message)
     }

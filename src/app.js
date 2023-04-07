@@ -18,5 +18,5 @@ app.use("/users",userRouter)
 app.use("/blogs",blogRouter)
 
 app.listen (port, ()=>{
-    console.log("port is working now..!")
+    console.log("backend port is working ..!")
 })
