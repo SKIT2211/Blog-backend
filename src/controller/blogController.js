@@ -35,6 +35,9 @@ const getBlog = async (req,res) =>{
         if(!getBlog){
         res.status(404).send()
         }else{
+            getBlog.picture = `http://localhost:9000/uploads/${getBlog?.picture}`
+
+            
             res.status(200).send(getBlog)
         }
     }catch(err){
@@ -45,6 +48,7 @@ const getBlog = async (req,res) =>{
 const addBlog = async (req, res) => {
     try{
     const blog = new Blogs(req.body)
+    console.log("sA",blog.picture);
 
     const createblog = await blog.save();
     res.status(201).send(createblog)
@@ -89,12 +93,12 @@ const deleteBlog= async (req, res) =>{
     }
 }
 
-const uploadImg = async (req, res)=>{
-    try{
-        res.send("file uploaded.")
-    }catch(err){
-        res.status(400).send("img not upload")        
-    }
-}
+// const uploadImg = async (req, res)=>{
+//     try{
+//         res.status(201).send("file uploaded.")
+//     }catch(err){
+//         res.status(400).send("img not upload")        
+//     }
+// }
 
-module.exports = { allBlogs, getMyBlogs, getBlog, addBlog, updateBlog, deleteBlog, uploadImg};
+module.exports = { allBlogs, getMyBlogs, getBlog, addBlog, updateBlog, deleteBlog};
