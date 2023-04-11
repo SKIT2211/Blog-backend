@@ -21,6 +21,6 @@ const upload = multer({
             cb(new Error("only image is allowed."))
         }
     }
-}).single("picture")
+}).single("file")
 
 module.exports = upload;

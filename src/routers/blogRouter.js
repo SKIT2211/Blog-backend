@@ -6,10 +6,8 @@ const { allBlogs, getMyBlogs, getBlog, addBlog, updateBlog, deleteBlog, uploadIm
 router.get('/allblogs', allBlogs)
 router.get('/myblogs/:id', getMyBlogs)
 router.get('/allblogs/:id', getBlog)
-router.put('/allblogs/:id', updateBlog)
+router.put('/allblogs/:id',upload, updateBlog)
 router.delete('/allblogs/:id', deleteBlog)
 router.post('/addblog',upload, addBlog)
-
-// router.post('/addimg', uploadImg )
 
 module.exports = router;

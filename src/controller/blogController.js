@@ -46,10 +46,17 @@ const getBlog = async (req,res) =>{
 }
 
 const addBlog = async (req, res) => {
+    // console.log("we", req.body );
     try{
-    const blog = new Blogs(req.body)
-    console.log("sA",blog.picture);
-
+        const reqPicture =req.file.filename;
+        const blog = new Blogs({
+        title : req.body.title,
+        description : req.body.description,
+        author: req.body.author,
+        category: req.body.category,
+        userId: req.body.userId,
+        picture: reqPicture
+        })
     const createblog = await blog.save();
     res.status(201).send(createblog)
 
@@ -61,8 +68,19 @@ const addBlog = async (req, res) => {
 const updateBlog= async (req, res) =>{
     try{
         const _id = req.params.id;
+        const reqPicture =req.file.filename;
+        console.log("updatepic error",reqPicture);
+        const blogModifier = {
+        title : req.body.title,
+        description : req.body.description,
+        author: req.body.author,
+        category: req.body.category,
+        userId: req.body.userId,
+        picture: reqPicture
+        }
 
-        const updateBlog = await Blogs.findByIdAndUpdate({_id : _id},req.body,{new:true})
+        console.log("modifier",blogModifier );
+        const updateBlog = await Blogs.findByIdAndUpdate({_id : _id}, blogModifier, {new:true})
 
         if(!updateBlog){
             res.status(400).send()
@@ -92,13 +110,5 @@ const deleteBlog= async (req, res) =>{
         res.status(400).send("blog not found")
     }
 }
-
-// const uploadImg = async (req, res)=>{
-//     try{
-//         res.status(201).send("file uploaded.")
-//     }catch(err){
-//         res.status(400).send("img not upload")        
-//     }
-// }
 
 module.exports = { allBlogs, getMyBlogs, getBlog, addBlog, updateBlog, deleteBlog};

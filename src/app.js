@@ -17,7 +17,7 @@ app.use(cors())
 app.use("/users",userRouter)
 app.use("/blogs",blogRouter)
 
-app.use("/uploads", express.static("./uploads"))
+app.use("/uploads", express.static("uploads"))
 
 app.listen (port, ()=>{
     console.log("backend port is working ..!")
