@@ -1,4 +1,5 @@
 const Blogs = require('../models/blogSchema')
+const fs = require('fs')
 
 const allBlogs = async(req,res) =>{
     try{
@@ -37,7 +38,6 @@ const getBlog = async (req,res) =>{
         }else{
             getBlog.picture = `http://localhost:9000/uploads/${getBlog?.picture}`
 
-            
             res.status(200).send(getBlog)
         }
     }catch(err){
@@ -46,7 +46,7 @@ const getBlog = async (req,res) =>{
 }
 
 const addBlog = async (req, res) => {
-    // console.log("we", req.body );
+
     try{
         const reqPicture =req.file.filename;
         const blog = new Blogs({
@@ -68,8 +68,11 @@ const addBlog = async (req, res) => {
 const updateBlog= async (req, res) =>{
     try{
         const _id = req.params.id;
-        const reqPicture =req.file.filename;
-        console.log("updatepic error",reqPicture);
+
+        let getfullBlog = await Blogs.findById({_id : _id},{picture: 1});
+        console.log("adas",req.file);
+        const reqPicture =(req.file && req.file.filename) ? req.file.filename :  getfullBlog.picture;
+
         const blogModifier = {
         title : req.body.title,
         description : req.body.description,
@@ -78,10 +81,13 @@ const updateBlog= async (req, res) =>{
         userId: req.body.userId,
         picture: reqPicture
         }
-
-        console.log("modifier",blogModifier );
-        const updateBlog = await Blogs.findByIdAndUpdate({_id : _id}, blogModifier, {new:true})
-
+        console.log("asaaaa",blogModifier);
+        
+        let updateBlog = await Blogs.findByIdAndUpdate({_id : _id}, blogModifier, {new:true})
+        
+        if(req.file?.filename){
+            fs.unlinkSync(`./uploads/${getfullBlog.picture}`)
+        }
         if(!updateBlog){
             res.status(400).send()
             }else{
@@ -89,6 +95,7 @@ const updateBlog= async (req, res) =>{
             }
 
     }catch(err){
+        console.log(err.message)
         res.status(400).send("blog not found")
     }
 }
@@ -97,16 +104,20 @@ const deleteBlog= async (req, res) =>{
     try{
         const _id = req.params.id;
 
-        const deleteBlog = await Blogs.findByIdAndDelete({_id : _id})
+        let deleteFileBlog = await Blogs.findById({_id : _id}, {picture: 1})
+        deleteFileBlog = await Blogs.findByIdAndDelete({_id : deleteFileBlog._id})
+        fs.unlinkSync(`./uploads/${deleteFileBlog.picture}`)
 
-        if(!deleteBlog){
+        if(!deleteFileBlog){ 
             res.status(400).send()
         }else{
-            res.status(200).send(deleteBlog)
-
+            res.status(200).send({
+                message: "done"
+            })
         }
 
     }catch(err){
+        console.log(err.message);
         res.status(400).send("blog not found")
     }
 }
