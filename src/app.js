@@ -20,5 +20,5 @@ app.use("/blogs",blogRouter)
 app.use("/uploads", express.static("uploads"))
 
 app.listen (port, ()=>{
-    console.log("backend port is working ..!")
+    console.log(`backend port ${port} is working ..!`)
 })

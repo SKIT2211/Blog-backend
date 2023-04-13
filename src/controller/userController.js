@@ -72,7 +72,7 @@ const registerUser = async (req, res) => {
 
         const user = new RegisterUser(req.body)
 
-        const token = await user.generateAuthToken();
+        // const token = await user.generateAuthToken();
 
         const createuser = await user.save();
         res.status(201).send({msg:"User Created Successfully.!!", data: createuser})
@@ -82,23 +82,21 @@ const registerUser = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
+
     try {
         const email = req.body.email;
         const password = req.body.password;
-
         const user = await RegisterUser.findOne({ email: email })
 
         const isMatch = await bcrypt.compare(password, user.password)
-
         const token = await user.generateAuthToken();
-        // console.log("token", token);
 
         if (isMatch) {
-            res.status(200).send(user)
+            res.status(200).send({msg:"Login Successfully.!!", data : user, token:token})
         } else {
-            res.status(400).send("Details are not correct.!")
+            res.status(400).send({msg:"Details are not correct.!"})
         }
-
+        
     } catch (err) {
         console.log(err.message);
         res.status(500).send("Details are not correct.!")
