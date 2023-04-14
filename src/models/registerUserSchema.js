@@ -49,7 +49,7 @@ const userRegisterSchema = new mongoose.Schema({
 userRegisterSchema.methods.generateAuthToken = async function () {
     try {
 
-        const token = jwt.sign({ _id: this._id.toString() }, process.env.SECRET_BACKEND_KEY);
+        const token = jwt.sign({ _id: this._id.toString() }, process.env.SECRET_ACCESS_KEY, {expiresIn:"5m"});
         // this.tokens = this.tokens.concat({token:token})
         await this.save();
         return token;

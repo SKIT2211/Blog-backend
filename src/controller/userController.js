@@ -92,7 +92,7 @@ const loginUser = async (req, res) => {
         const token = await user.generateAuthToken();
 
         if (isMatch) {
-            res.status(200).send({msg:"Login Successfully.!!", data : user, token:token})
+            res.status(200).send({msg:"Login Successfully.!!", data : user, accesstoken:token})
         } else {
             res.status(400).send({msg:"Details are not correct.!"})
         }
