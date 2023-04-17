@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const upload = require('../middleware/upload')
-const { allBlogs, getMyBlogs, getBlog, addBlog, updateBlog, deleteBlog, uploadImg} = require('../controller/blogController')
+const { allBlogs, getMyBlogs, getBlog, addBlog, updateBlog, deleteBlog} = require('../controller/blogController')
 
 router.get('/allblogs', allBlogs)
 router.get('/myblogs/:id', getMyBlogs)

@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const RegisterUser = require("../models/registerUserSchema");
 
 const auth = (req, res, next)=>{
     try{    
@@ -7,7 +6,7 @@ const auth = (req, res, next)=>{
         token = tokenHeader && tokenHeader.split(' ')[1]; 
 
         if(token == null ){
-            return res.sendStatus(400)
+            return res.status(401).send("unauthorized user!!")
         }  
         jwt.verify(token, process.env.SECRET_ACCESS_KEY , (err) =>{
             if(err){

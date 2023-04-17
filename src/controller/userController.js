@@ -93,43 +93,33 @@ const loginUser = async (req, res) => {
         const refreshtoken = await user.generateAuthRefreshToken();
 
         if (isMatch) {
-            res.status(200).send({msg:"Login Successfully.!!", data : user, accesstoken:accesstoken, refreshtoken:refreshtoken})
+            res.status(200).send({msg:"Login Successfully.!!", data : user, accessToken:accesstoken, refreshToken:refreshtoken})
         } else {
             res.status(400).send({msg:"Details are not correct.!"})
         }
         
     } catch (err) {
         console.log(err.message);
-        res.status(500).send("Details are not correct.!")
+        res.status(404).send({msg:"Details are not correct.!"})
     }
 }
 
 const loginUserRefreshToken = async (req,res) =>{
     try{
-        console.log("reee",req.body);
         const token = req.body.refreshToken
-        // let tokenHeader = req.header('Authorization');
-
-        // token = tokenHeader && tokenHeader.split(' ')[1]; 
-        console.log("qweq", token);
         if(!token){
             return res.sendStatus(400)
         }
 
         jwt.verify(token, process.env.SECRET_REFRESH_KEY, (err, data) => {
         if(err){
-            // console.log("err",err);
             res.sendStatus(400)
         }else{
-            // console.log("qqqqq",jwt.decode._id);
-            console.log("asd",data);
             const accessToken = jwt.sign({ _id: data._id },process.env.SECRET_ACCESS_KEY,{ expiresIn:"1m"})
-            console.log("zsd", accessToken);
             res.send(accessToken)
         }
         })
     }catch(err){
-        console.log(err.message);
         res.status(500).send("Refresh token error.!")
     }
 }

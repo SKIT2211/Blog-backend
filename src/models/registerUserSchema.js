@@ -58,17 +58,6 @@ userRegisterSchema.methods.generateAuthAccessToken = async function () {
     }
 }
 
-// userRegisterSchema.methods.generateAuthReAccessToken = async function () {
-//     try {
-
-//         const token = jwt.sign({ _id: this._id.toString() }, process.env.SECRET_ACCESS_KEY, {expiresIn:"1m"});
-//         await this.save();
-//         return token;
-//     } catch (err) {
-//         console.log("token error", err);
-//     }
-// }
-
 userRegisterSchema.methods.generateAuthRefreshToken = async function () {
     try {
 
