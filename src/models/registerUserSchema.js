@@ -46,11 +46,33 @@ const userRegisterSchema = new mongoose.Schema({
     // }]
 })
 
-userRegisterSchema.methods.generateAuthToken = async function () {
+userRegisterSchema.methods.generateAuthAccessToken = async function () {
     try {
 
-        const token = jwt.sign({ _id: this._id.toString() }, process.env.SECRET_ACCESS_KEY, {expiresIn:"5m"});
+        const token = jwt.sign({ _id: this._id.toString() }, process.env.SECRET_ACCESS_KEY, {expiresIn:"1m"});
         // this.tokens = this.tokens.concat({token:token})
+        await this.save();
+        return token;
+    } catch (err) {
+        console.log("token error", err);
+    }
+}
+
+// userRegisterSchema.methods.generateAuthReAccessToken = async function () {
+//     try {
+
+//         const token = jwt.sign({ _id: this._id.toString() }, process.env.SECRET_ACCESS_KEY, {expiresIn:"1m"});
+//         await this.save();
+//         return token;
+//     } catch (err) {
+//         console.log("token error", err);
+//     }
+// }
+
+userRegisterSchema.methods.generateAuthRefreshToken = async function () {
+    try {
+
+        const token = jwt.sign({ _id: this._id.toString() }, process.env.SECRET_REFRESH_KEY, {expiresIn:"24h"});
         await this.save();
         return token;
     } catch (err) {
