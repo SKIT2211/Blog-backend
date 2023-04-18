@@ -139,15 +139,15 @@ const sendpasslink = async (req,res) =>{
         const user = await RegisterUser.findOne({ email: email })
         if(user){
 
-            
+            const token = jwt.sign({id: user._id}, process.env.SECRET_ACCESS_KEY,{ expiresIn:"2m"})
 
             const mailOptions = {
                 from:"jsj22037@gmail.com",
                 to:email,
                 subject:"sending email for reset password.",
-                text:`This is link http://localhost:3000/forgotpassword`
+                text:`This is the reset password link--> http://localhost:3000/forgotpassword/${user._id}/${token} >-- this is valid for 2 min.`
             }
-            transporter.sendMail(mailOptions, (err,info) =>{
+            transporter.sendMail(mailOptions, (err) =>{
                  if(err){
                     res.status(400).send({message:"email is not sent"})
                  }else{
@@ -162,4 +162,43 @@ const sendpasslink = async (req,res) =>{
     }
 }
 
-module.exports = { getAllUsers, getUser, deleteUser, updateRole, registerUser, loginUser, loginUserRefreshToken, sendpasslink };
+const forgotPassword = async (req,res) =>{
+    try{
+    const params = req.params;
+    const user = await RegisterUser.findOne({ _id : params.id })
+    const verify = jwt.verify(params.token, process.env.SECRET_ACCESS_KEY )
+
+    if(user && verify._id ){
+        res.status(201).send({msg:"valid user"})
+    }else{
+        res.status(401).send({msg:"invalid user"})
+    }
+    }catch(err){
+        res.send(err.message)
+    }
+}
+
+
+const postForgotPassword = async (req,res) =>{
+    try{
+    const params = req.params;
+    const password =req.body.password
+    const user = await RegisterUser.findOne({ _id : params.id })
+    const verify = jwt.verify(params.token, process.env.SECRET_ACCESS_KEY )
+
+    if(user && verify._id){
+
+        const newpassword = await bcrypt.hash(password, 10)
+
+        const setNewPass = await RegisterUser.findByIdAndUpdate({ _id : params.id },{password : newpassword})
+        setNewPass.save();
+        res.status(201).send({msg:"valid user"})
+    }else{
+            res.status(401).send({msg:"invalid user"}) 
+    }
+    }catch(err){
+        res.send(err.message)
+    }
+}
+
+module.exports = { getAllUsers, getUser, deleteUser, updateRole, registerUser, loginUser, loginUserRefreshToken, sendpasslink, forgotPassword, postForgotPassword};
