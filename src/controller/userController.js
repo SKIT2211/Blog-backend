@@ -1,6 +1,15 @@
 const RegisterUser = require('../models/registerUserSchema')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer')
+
+const transporter = nodemailer.createTransport({
+    service:"Gmail",
+    auth:{
+        user:"riaavarsani31@gmail.com",
+        pass:"zrryezliqqzgmpga"
+    }
+})
 
 const getAllUsers = async (req, res) => {
     try {
@@ -124,4 +133,33 @@ const loginUserRefreshToken = async (req,res) =>{
     }
 }
 
-module.exports = { getAllUsers, getUser, deleteUser, updateRole, registerUser, loginUser, loginUserRefreshToken };
+const sendpasslink = async (req,res) =>{
+    try{
+        const email = req.body.email;
+        const user = await RegisterUser.findOne({ email: email })
+        if(user){
+
+            
+
+            const mailOptions = {
+                from:"jsj22037@gmail.com",
+                to:email,
+                subject:"sending email for reset password.",
+                text:`This is link http://localhost:3000/forgotpassword`
+            }
+            transporter.sendMail(mailOptions, (err,info) =>{
+                 if(err){
+                    res.status(400).send({message:"email is not sent"})
+                 }else{
+                    res.status(201).send({message:"email is sent successfully "})
+                 }
+            })
+        }else{
+            res.status(401).send({msg:"enter your email"})
+        }
+    }catch(err){
+        res.send(err.message)
+    }
+}
+
+module.exports = { getAllUsers, getUser, deleteUser, updateRole, registerUser, loginUser, loginUserRefreshToken, sendpasslink };
