@@ -164,8 +164,7 @@ const forgotPassword = async (req,res) =>{
     const params = req.params;
     const user = await RegisterUser.findOne({ _id : params.id })
     const verify = jwt.verify(params.token, process.env.SECRET_ACCESS_KEY )
-
-    if(user && verify._id ){
+    if(user && verify.id ){
         res.status(201).send({msg:"valid user"})
     }else{
         res.status(401).send({msg:"invalid user"})
@@ -185,11 +184,11 @@ const postForgotPassword = async (req,res) =>{
     const user = await RegisterUser.findOne({ _id : params.id })
     const verify = jwt.verify(token, process.env.SECRET_ACCESS_KEY )
 
-    if(user && verify._id){
+    if(user && verify.id){
 
         const newpassword = await bcrypt.hash(password, 10)
 
-        const setNewPass = await RegisterUser.findByIdAndUpdate({ _id : _id },{password : newpassword},{ new: true })
+        const setNewPass = await RegisterUser.findByIdAndUpdate({ _id : _id },{password : newpassword})
         setNewPass.save();
         res.status(201).send({msg:"valid user"})
     }else{

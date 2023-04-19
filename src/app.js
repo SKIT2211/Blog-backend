@@ -7,13 +7,13 @@ const app = express();
 
 require('../src/db/conn')
 
+app.use(express.json());
+app.use(cors())
+    
 const port = process.env.PORT || 9000;
 const userRouter = require("./routers/userRouter")
 const blogRouter = require("./routers/blogRouter")
 
-
-app.use(express.json());
-app.use(cors())
 app.use("/users",userRouter)
 app.use("/blogs",blogRouter)
 
