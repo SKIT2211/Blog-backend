@@ -80,13 +80,10 @@ const registerUser = async (req, res) => {
         }
 
         const user = new RegisterUser(req.body)
-
-        // const token = await user.generateAuthToken();
-
         const createuser = await user.save();
         res.status(201).send({msg:"User Created Successfully.!!", data: createuser})
     } catch (err) {
-        res.status(400).send(err.message)
+        res.status(400).send(err.message) 
     }
 }
 
@@ -183,14 +180,16 @@ const postForgotPassword = async (req,res) =>{
     try{
     const params = req.params;
     const password =req.body.password
+    const token = params.token
+    const _id = params.id
     const user = await RegisterUser.findOne({ _id : params.id })
-    const verify = jwt.verify(params.token, process.env.SECRET_ACCESS_KEY )
+    const verify = jwt.verify(token, process.env.SECRET_ACCESS_KEY )
 
     if(user && verify._id){
 
         const newpassword = await bcrypt.hash(password, 10)
 
-        const setNewPass = await RegisterUser.findByIdAndUpdate({ _id : params.id },{password : newpassword})
+        const setNewPass = await RegisterUser.findByIdAndUpdate({ _id : _id },{password : newpassword},{ new: true })
         setNewPass.save();
         res.status(201).send({msg:"valid user"})
     }else{
